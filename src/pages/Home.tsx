@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   Divider,
+  InputAdornment,
   Link,
   TextField,
   Typography,
@@ -11,19 +12,19 @@ import {
 import styles from './Home.module.css';
 import { useState } from 'react';
 
-const isNumber = (value: string) => {
+const isNumber = (value: string): boolean => {
   return !Number.isNaN(parseInt(value, 10)) && value !== '';
 };
 
 export const HomePage = () => {
-  const [powerDraw, setPowerDraw] = useState<string>('0');
+  const [powerDraw, setPowerDraw] = useState<string>('300');
   const [powerDrawError, setPowerDrawError] = useState<boolean>(false);
-  const [inferenceSpeed, setInferenceSpeed] = useState<string>('0');
+  const [inferenceSpeed, setInferenceSpeed] = useState<string>('120');
   const [inferenceSpeedError, setInferenceSpeedError] =
     useState<boolean>(false);
-  const [hardwareCost, setHardwareCost] = useState<string>('0');
+  const [hardwareCost, setHardwareCost] = useState<string>('600');
   const [hardwareCostError, setHardwareCostError] = useState<boolean>(false);
-  const [tokenUsagePerDay, setTokenUsagePerDay] = useState<string>('0');
+  const [tokenUsagePerDay, setTokenUsagePerDay] = useState<string>('400000');
   const [tokenUsagePerDayError, setTokenUsagePerDayError] =
     useState<boolean>(false);
 
@@ -70,6 +71,13 @@ export const HomePage = () => {
                 }}
                 error={powerDrawError}
                 helperText={powerDrawError ? 'Enter a valid number' : ''}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">W</InputAdornment>
+                    ),
+                  },
+                }}
               />
             </CardContent>
           </Card>
@@ -111,6 +119,13 @@ export const HomePage = () => {
                 }}
                 error={inferenceSpeedError}
                 helperText={inferenceSpeedError ? 'Enter a valid number' : ''}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">tok/s</InputAdornment>
+                    ),
+                  },
+                }}
               />
             </CardContent>
           </Card>
@@ -132,11 +147,18 @@ export const HomePage = () => {
                 }}
                 error={hardwareCostError}
                 helperText={hardwareCostError ? 'Enter a valid number' : ''}
-                sx={{ marginTop: '8px' }}
+                sx={{ marginTop: '12px' }}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                  },
+                }}
               />
               <TextField
                 variant="outlined"
-                label="Average token usage per day"
+                label="Token usage per day"
                 fullWidth
                 value={tokenUsagePerDay}
                 onChange={(event) => {
@@ -145,7 +167,14 @@ export const HomePage = () => {
                 }}
                 error={tokenUsagePerDayError}
                 helperText={tokenUsagePerDayError ? 'Enter a valid number' : ''}
-                sx={{ marginTop: '8px' }}
+                sx={{ marginTop: '12px' }}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">tok</InputAdornment>
+                    ),
+                  },
+                }}
               />
             </CardContent>
           </Card>
@@ -153,7 +182,7 @@ export const HomePage = () => {
         <Box className={styles.childBox}>
           <Card>
             <CardContent>
-              <Typography variant="h5">Token Cost Breakdown</Typography>
+              <Typography variant="h5">Per Token Cost Breakdown</Typography>
             </CardContent>
           </Card>
           <Card>
