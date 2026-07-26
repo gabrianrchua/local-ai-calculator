@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# Home AI Rig Cost Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight tool for estimating the cost of running a local AI compute rig — both electricity-only and total cost of ownership (TCO) with hardware amortization — compared to cloud API pricing tiers.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Electricity cost** per million tokens based on power draw, inference speed, and electricity rate
+- **Hardware amortization** over a configurable period (years), factoring in component cost and daily token usage
+- **Total cost of ownership** combining running costs with amortized hardware expense
+- **Cloud comparison table** showing where your calculated cost falls relative to major cloud model tiers (Small → Frontier)
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Category | Technology |
+|----------|------------|
+| Framework | React 19 + TypeScript |
+| UI Components | MUI (Material UI) v9, dark theme |
+| Build tool | Vite |
+| Styling | CSS Modules |
+| Linting / formatting | ESLint, Prettier |
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Start the development server with HMR
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+# Type-check and lint
+npm run build    # runs tsc + vite build
+npm run lint     # ESLint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## How It Works
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+### Electricity cost per million tokens
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
 ```
+(power_watts × electricity_cost_per_kWh × 1_000_000) / (3_600_000 × inference_speed_tok_s)
+```
+
+This represents the running cost of powering your rig while generating tokens.
+
+### Hardware amortization per million tokens
+
+```
+(hardware_cost × 1_000_000) / (tokens_per_day × 365 × amortization_years)
+```
+
+Spreads a one-time hardware purchase over time to arrive at a daily-per-token cost.
+
+### Total cost of ownership
+
+Electricity + amortized hardware, giving the full picture for budgeting decisions.
+
+## Cloud Comparison Tiers
+
+The built-in table (as of 2026) maps your total cost against typical cloud model pricing:
+
+| Tier | Examples | Cost Range ($/MTok) |
+|------|----------|---------------------|
+| Small | Claude Haiku, GPT mini, Gemini Flash-Lite | $1 – $5 |
+| Medium | Claude Sonnet, GPT Luna, Gemini Flash | $9 – $15 |
+| Large | Claude Opus, GPT Terra, Gemini Pro | $18 – $25 |
+| Frontier | Claude Fable, GPT Sol | $45 – $50 |
+
+These ranges are approximate and intended for rough comparison only. Cloud pricing changes frequently — check the [OpenAI](https://developers.openai.com/api/docs/pricing), [Anthropic](https://platform.claude.com/docs/en/about-claude/pricing), and [Google](https://ai.google.dev/gemini-api/docs/pricing) documentation for current rates.
+
+## Inputs Explained
+
+| Field | What to enter |
+|-------|---------------|
+| Total Power Draw (W) | Real-world wattage via a Kill A Watt meter, or PCPartPicker's "Estimated Wattage" |
+| Cost of Electricity ($/kWh) | Your local electricity rate |
+| Inference Speed (tok/s) | Benchmark decode speed from [Will It Run AI](https://willitrunai.com/) or real-world measurement |
+| Cost of Components ($) | Total hardware purchase price |
+| Token usage per day | Estimated daily token generation volume |
+| Amortization Length (years) | How long you plan to keep the hardware |
+
+## Disclaimer
+
+This tool provides rough estimates for planning purposes only. Actual costs will vary based on workload patterns, hardware efficiency, electricity rate fluctuations, and model behavior. This project is not affiliated with, endorsed by, or connected to OpenAI, Anthropic, Google, or any other company mentioned. All trademarks belong to their respective owners.
