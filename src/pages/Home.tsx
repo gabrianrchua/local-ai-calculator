@@ -497,7 +497,7 @@ export const HomePage = () => {
         <Box className={styles.childBox}>
           <Card>
             <CardContent>
-              <Typography variant="h4">Per Token Cost Breakdown</Typography>
+              <Typography variant="h4">Per Token Cost</Typography>
               <Typography variant="body1">
                 The electricity-only cost of running your AI compute rig per
                 million tokens. Use this value if you already owned the hardware
@@ -514,9 +514,7 @@ export const HomePage = () => {
           </Card>
           <Card>
             <CardContent>
-              <Typography variant="h4">
-                Total Cost of Ownership Breakdown
-              </Typography>
+              <Typography variant="h4">Total Cost of Ownership</Typography>
               <Typography variant="body1">
                 The total cost of ownership (TCO) of purchasing and running your
                 AI compute rig, amortized over your chosen number of years, per
