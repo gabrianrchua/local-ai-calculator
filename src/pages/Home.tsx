@@ -12,10 +12,21 @@ import {
 import styles from './Home.module.css';
 import { useState } from 'react';
 
+/**
+ * Checks whether a string represents a valid number.
+ */
 const isNumber = (value: string): boolean => {
   return !Number.isNaN(parseFloat(value)) && value !== '';
 };
 
+/**
+ * Calculates the electricity cost per million tokens.
+ *
+ * @param power - Power draw in watts
+ * @param speed - Inference speed in tokens per second
+ * @param electricity - Cost of electricity in $/kWh
+ * @returns Cost per million tokens as a raw number
+ */
 const calculateCostPerMToken = (
   power: number,
   speed: number,
@@ -24,6 +35,14 @@ const calculateCostPerMToken = (
   return (power * electricity * 1_000_000) / (3_600_000 * speed);
 };
 
+/**
+ * Calculates the electricity cost per million tokens with input validation.
+ *
+ * @param power - Power draw in watts
+ * @param speed - Inference speed in tokens per second
+ * @param electricity - Cost of electricity in $/kWh
+ * @returns Formatted cost string (e.g., "$0.12 / MTok") or an error message
+ */
 const safeCalculateCostPerMToken = (
   power: string,
   speed: string,
@@ -41,6 +60,14 @@ const safeCalculateCostPerMToken = (
   return `$${costPerMToken.toFixed(2)} / MTok`;
 };
 
+/**
+ * Calculates the amortized hardware cost per million tokens.
+ *
+ * @param hardware - Total hardware cost in dollars
+ * @param years - Amortization period in years
+ * @param tokensPerDay - Number of tokens generated per day
+ * @returns Amortized cost per million tokens as a raw number
+ */
 const calculateAmortizationCost = (
   hardware: number,
   years: number,
@@ -49,6 +76,14 @@ const calculateAmortizationCost = (
   return (hardware * 1_000_000) / (tokensPerDay * 365 * years);
 };
 
+/**
+ * Calculates the amortized hardware cost per million tokens with input validation.
+ *
+ * @param hardware - Total hardware cost in dollars
+ * @param years - Amortization period in years
+ * @param tokensPerDay - Number of tokens generated per day
+ * @returns Formatted cost string (e.g., "$0.12 / MTok") or an error message
+ */
 const safeCalculateAmortizationCost = (
   hardware: string,
   years: string,
@@ -64,6 +99,72 @@ const safeCalculateAmortizationCost = (
   );
 
   return `$${amortizationCost.toFixed(2)} / MTok`;
+};
+
+/**
+ * Calculates the total cost per million tokens (electricity + amortized hardware).
+ *
+ * @param power - Power draw in watts
+ * @param speed - Inference speed in tokens per second
+ * @param electricity - Cost of electricity in $/kWh
+ * @param hardware - Total hardware cost in dollars
+ * @param years - Amortization period in years
+ * @param tokensPerDay - Number of tokens generated per day
+ * @returns Total cost per million tokens as a raw number
+ */
+const calculateTotalCost = (
+  power: number,
+  speed: number,
+  electricity: number,
+  hardware: number,
+  years: number,
+  tokensPerDay: number
+): number => {
+  return (
+    calculateCostPerMToken(power, speed, electricity) +
+    calculateAmortizationCost(hardware, years, tokensPerDay)
+  );
+};
+
+/**
+ * Calculates the total cost per million tokens with input validation.
+
+ * @param power - Power draw in watts
+ * @param speed - Inference speed in tokens per second
+ * @param electricity - Cost of electricity in $/kWh
+ * @param hardware - Total hardware cost in dollars
+ * @param years - Amortization period in years
+ * @param tokensPerDay - Number of tokens generated per day
+ * @returns Formatted cost string (e.g., "$0.12 / MTok") or an error message
+ */
+const safeCalculateTotalCost = (
+  power: string,
+  speed: string,
+  electricity: string,
+  hardware: string,
+  years: string,
+  tokensPerDay: string
+): string => {
+  if (
+    !isNumber(power) ||
+    !isNumber(speed) ||
+    !isNumber(electricity) ||
+    !isNumber(hardware) ||
+    !isNumber(years) ||
+    !isNumber(tokensPerDay)
+  ) {
+    return 'Input validation error! Please enter valid numbers on the left side.';
+  }
+  const totalCost: number = calculateTotalCost(
+    parseFloat(power),
+    parseFloat(speed),
+    parseFloat(electricity),
+    parseFloat(hardware),
+    parseFloat(years),
+    parseFloat(tokensPerDay)
+  );
+
+  return `$${totalCost.toFixed(2)} / MTok`;
 };
 
 export const HomePage = () => {
@@ -304,6 +405,16 @@ export const HomePage = () => {
               </Typography>
               <Typography variant="body1">
                 {safeCalculateAmortizationCost(
+                  hardwareCost,
+                  amortizationLength,
+                  tokenUsagePerDay
+                )}
+              </Typography>
+              <Typography variant="body1">
+                {safeCalculateTotalCost(
+                  powerDraw,
+                  inferenceSpeed,
+                  powerCost,
                   hardwareCost,
                   amortizationLength,
                   tokenUsagePerDay
