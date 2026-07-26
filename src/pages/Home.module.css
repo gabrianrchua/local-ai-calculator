@@ -6,7 +6,7 @@
 }
 
 .childBox {
-  width: 50%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -19,4 +19,14 @@
 .ul {
   margin-top: 0;
   margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .rootBox {
+    flex-direction: column;
+  }
+
+  .childBox {
+    width: 100%;
+  }
 }
