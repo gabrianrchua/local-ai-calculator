@@ -13,12 +13,64 @@ import styles from './Home.module.css';
 import { useState } from 'react';
 
 const isNumber = (value: string): boolean => {
-  return !Number.isNaN(parseInt(value, 10)) && value !== '';
+  return !Number.isNaN(parseFloat(value)) && value !== '';
+};
+
+const calculateCostPerMToken = (
+  power: number,
+  speed: number,
+  electricity: number
+): number => {
+  return (power * electricity * 1_000_000) / (3_600_000 * speed);
+};
+
+const safeCalculateCostPerMToken = (
+  power: string,
+  speed: string,
+  electricity: string
+): string => {
+  if (!isNumber(power) || !isNumber(speed) || !isNumber(electricity)) {
+    return 'Input validation error! Please enter valid numbers on the left side.';
+  }
+  const costPerMToken: number = calculateCostPerMToken(
+    parseFloat(power),
+    parseFloat(speed),
+    parseFloat(electricity)
+  );
+
+  return `$${costPerMToken.toFixed(2)} / MTok`;
+};
+
+const calculateAmortizationCost = (
+  hardware: number,
+  years: number,
+  tokensPerDay: number
+): number => {
+  return (hardware * 1_000_000) / (tokensPerDay * 365 * years);
+};
+
+const safeCalculateAmortizationCost = (
+  hardware: string,
+  years: string,
+  tokensPerDay: string
+): string => {
+  if (!isNumber(hardware) || !isNumber(years) || !isNumber(tokensPerDay)) {
+    return 'Input validation error! Please enter valid numbers on the left side.';
+  }
+  const amortizationCost: number = calculateAmortizationCost(
+    parseFloat(hardware),
+    parseFloat(years),
+    parseFloat(tokensPerDay)
+  );
+
+  return `$${amortizationCost.toFixed(2)} / MTok`;
 };
 
 export const HomePage = () => {
   const [powerDraw, setPowerDraw] = useState<string>('300');
   const [powerDrawError, setPowerDrawError] = useState<boolean>(false);
+  const [powerCost, setPowerCost] = useState<string>('0.12');
+  const [powerCostError, setPowerCostError] = useState<boolean>(false);
   const [inferenceSpeed, setInferenceSpeed] = useState<string>('120');
   const [inferenceSpeedError, setInferenceSpeedError] =
     useState<boolean>(false);
@@ -26,6 +78,9 @@ export const HomePage = () => {
   const [hardwareCostError, setHardwareCostError] = useState<boolean>(false);
   const [tokenUsagePerDay, setTokenUsagePerDay] = useState<string>('400000');
   const [tokenUsagePerDayError, setTokenUsagePerDayError] =
+    useState<boolean>(false);
+  const [amortizationLength, setAmortizationLength] = useState<string>('2');
+  const [amortizationLengthError, setAmortizationLengthError] =
     useState<boolean>(false);
 
   return (
@@ -38,7 +93,8 @@ export const HomePage = () => {
             <CardContent>
               <Typography variant="h5">Power Usage</Typography>
               <Typography variant="body1">
-                Enter your rig's estimated power usage during inference.
+                Enter your rig's estimated power usage and cost of electricity
+                during inference.
               </Typography>
               <ul>
                 <li>
@@ -63,7 +119,6 @@ export const HomePage = () => {
               <TextField
                 variant="outlined"
                 label="Total Power Draw (W)"
-                fullWidth
                 value={powerDraw}
                 onChange={(event) => {
                   setPowerDraw(event.target.value);
@@ -71,10 +126,30 @@ export const HomePage = () => {
                 }}
                 error={powerDrawError}
                 helperText={powerDrawError ? 'Enter a valid number' : ''}
+                sx={{ marginTop: '12px' }}
                 slotProps={{
                   input: {
                     endAdornment: (
                       <InputAdornment position="end">W</InputAdornment>
+                    ),
+                  },
+                }}
+              />
+              <TextField
+                variant="outlined"
+                label="Cost of Electricity ($/kWh)"
+                value={powerCost}
+                onChange={(event) => {
+                  setPowerCost(event.target.value);
+                  setPowerCostError(!isNumber(event.target.value));
+                }}
+                error={powerCostError}
+                helperText={powerCostError ? 'Enter a valid number' : ''}
+                sx={{ marginTop: '12px' }}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">$/kWh</InputAdornment>
                     ),
                   },
                 }}
@@ -85,8 +160,8 @@ export const HomePage = () => {
             <CardContent>
               <Typography variant="h5">Model Performance</Typography>
               <Typography variant="body1">
-                Enter the performance of your hardware for the model you want to
-                run, in tokens per second.
+                Enter the token generation speed of your hardware for the model
+                you want to run, in tokens per second.
               </Typography>
               <ul>
                 <li>
@@ -111,7 +186,6 @@ export const HomePage = () => {
               <TextField
                 variant="outlined"
                 label="Inference Speed (tok/s)"
-                fullWidth
                 value={inferenceSpeed}
                 onChange={(event) => {
                   setInferenceSpeed(event.target.value);
@@ -139,7 +213,6 @@ export const HomePage = () => {
               <TextField
                 variant="outlined"
                 label="Cost of components"
-                fullWidth
                 value={hardwareCost}
                 onChange={(event) => {
                   setHardwareCost(event.target.value);
@@ -159,7 +232,6 @@ export const HomePage = () => {
               <TextField
                 variant="outlined"
                 label="Token usage per day"
-                fullWidth
                 value={tokenUsagePerDay}
                 onChange={(event) => {
                   setTokenUsagePerDay(event.target.value);
@@ -176,6 +248,27 @@ export const HomePage = () => {
                   },
                 }}
               />
+              <TextField
+                variant="outlined"
+                label="Amortization Length (years)"
+                value={amortizationLength}
+                onChange={(event) => {
+                  setAmortizationLength(event.target.value);
+                  setAmortizationLengthError(!isNumber(event.target.value));
+                }}
+                error={amortizationLengthError}
+                helperText={
+                  amortizationLengthError ? 'Enter a valid number' : ''
+                }
+                sx={{ marginTop: '12px' }}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">years</InputAdornment>
+                    ),
+                  },
+                }}
+              />
             </CardContent>
           </Card>
         </Box>
@@ -183,12 +276,38 @@ export const HomePage = () => {
           <Card>
             <CardContent>
               <Typography variant="h5">Per Token Cost Breakdown</Typography>
+              <Typography variant="body1">
+                The electricity-only cost of running your AI compute rig per
+                million tokens. This factors in power draw, cost of power, and
+                token generation speed.
+              </Typography>
+              <Typography variant="body1">
+                {safeCalculateCostPerMToken(
+                  powerDraw,
+                  inferenceSpeed,
+                  powerCost
+                )}
+              </Typography>
             </CardContent>
           </Card>
           <Card>
             <CardContent>
               <Typography variant="h5">
                 Total Cost of Ownership Breakdown
+              </Typography>
+              <Typography variant="body1">
+                The total cost of ownership (TCO) of purchasing and running your
+                AI compute rig, amortized over your chosen number of years, per
+                million tokens. This factors in hardware cost, tokens used per
+                day, amortization length, power draw, cost of power, and token
+                generation speed.
+              </Typography>
+              <Typography variant="body1">
+                {safeCalculateAmortizationCost(
+                  hardwareCost,
+                  amortizationLength,
+                  tokenUsagePerDay
+                )}
               </Typography>
             </CardContent>
           </Card>
