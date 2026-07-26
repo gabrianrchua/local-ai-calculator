@@ -174,7 +174,7 @@ const safeCalculateTotalCost = (
 };
 
 /**
- * Reference cost ranges (per million tokens) for comparison with frontier models.
+ * Reference cost ranges (per million tokens) for comparison with paid models.
  */
 const tableData = [
   {
@@ -196,12 +196,49 @@ const tableData = [
     costHigh: 25,
   },
   {
-    tier: 'Flagship',
+    tier: 'Frontier',
     examples: 'Claude Fable, GPT Sol',
     costLow: 45,
     costHigh: 50,
   },
 ];
+
+/**
+ * Describes where the user's total cost per million tokens falls relative to
+ * frontier model tiers.
+ *
+ * @param cost - The user's calculated total cost in $/MTok (raw number)
+ * @returns A human-readable comparison message
+ */
+const describeCostComparison = (cost: number): string => {
+  // Find the first tier whose range contains this cost
+  const matchingTier = tableData.find(
+    (tier) => cost >= tier.costLow && cost <= tier.costHigh
+  );
+
+  const roundedCost: string = cost.toFixed(2);
+
+  if (matchingTier) {
+    return `At $${roundedCost} / MTok, your cost is similar to ${matchingTier.tier.toLowerCase()}-sized paid models.`;
+  }
+
+  // Check if the cost sits between two consecutive tiers
+  for (let i = 0; i < tableData.length - 1; i++) {
+    const lower = tableData[i];
+    const upper = tableData[i + 1];
+
+    if (cost > lower.costHigh && cost < upper.costLow) {
+      return `At $${roundedCost} / MTok, your cost is cheaper than ${upper.tier.toLowerCase()}-sized models but more expensive than ${lower.tier.toLowerCase()}-sized models.`;
+    }
+  }
+
+  // Below all tiers or above all tiers — check in order
+  if (cost < tableData[0].costLow) {
+    return `At $${roundedCost} / MTok, your cost is less than even the most inexpensive paid models!`;
+  }
+
+  return `At $${roundedCost} / MTok, your cost exceeds even the most expensive paid models.`;
+};
 
 export const HomePage = () => {
   const [powerDraw, setPowerDraw] = useState<string>('300');
@@ -223,6 +260,15 @@ export const HomePage = () => {
   return (
     <>
       <Typography variant="h3">Home AI Rig Cost Calculator</Typography>
+      <Typography variant="body2">
+        Whether building a local AI computer makes sense depends on both cost
+        and performance. A local model can never compete with current frontier
+        models, but they often can perform well against small to medium sized
+        models. If a strong local model performs just as well as a cloud model
+        but is cheaper to run, it can make sense to build or buy a local AI
+        compute node. Plus, it gives you complete control over the software and
+        increased privacy, knowing that your data never leaves your own network!
+      </Typography>
       <Divider sx={{ marginBottom: '8px', marginTop: '8px' }} />
       <Box className={styles.rootBox}>
         <Box className={styles.childBox}>
@@ -460,10 +506,11 @@ export const HomePage = () => {
           <Card>
             <CardContent>
               <Typography variant="h4">
-                Cost Comparison with Frontier Models
+                Cost Comparison with Cloud Models
               </Typography>
               <Typography variant="body1">
-                How does your AI Rig compare to paying for frontier models from{' '}
+                How does your local AI rig compare to paying API rates for paid
+                cloud models from the big players like{' '}
                 <Link
                   href="https://developers.openai.com/api/docs/pricing"
                   target="_blank"
@@ -484,7 +531,7 @@ export const HomePage = () => {
                 >
                   Google
                 </Link>
-                , etc.?
+                , and more?
               </Typography>
               <Typography variant="h6">
                 Typical output cost for different tiers per million tokens (as
@@ -508,12 +555,37 @@ export const HomePage = () => {
                       <TableRow key={row.tier}>
                         <TableCell>{row.tier}</TableCell>
                         <TableCell>{row.examples}</TableCell>
-                        <TableCell>${row.costLow} - ${row.costHigh}</TableCell>
+                        <TableCell>
+                          ${row.costLow} - ${row.costHigh}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
+              {isNumber(powerDraw) &&
+                isNumber(inferenceSpeed) &&
+                isNumber(powerCost) &&
+                isNumber(hardwareCost) &&
+                isNumber(amortizationLength) &&
+                isNumber(tokenUsagePerDay) && (
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    sx={{ marginTop: '12px' }}
+                  >
+                    {describeCostComparison(
+                      calculateTotalCost(
+                        parseFloat(powerDraw),
+                        parseFloat(inferenceSpeed),
+                        parseFloat(powerCost),
+                        parseFloat(hardwareCost),
+                        parseFloat(amortizationLength),
+                        parseFloat(tokenUsagePerDay)
+                      )
+                    )}
+                  </Typography>
+                )}
             </CardContent>
           </Card>
         </Box>
