@@ -4,6 +4,7 @@ import {
   CardContent,
   Divider,
   Link,
+  TextField,
   Typography,
 } from '@mui/material';
 
@@ -42,6 +43,12 @@ export const HomePage = () => {
                   </Typography>
                 </li>
               </ul>
+              <TextField
+                variant="outlined"
+                label="Total Power Draw (W)"
+                fullWidth
+                type="number"
+              />
             </CardContent>
           </Card>
           <Card>
@@ -71,6 +78,12 @@ export const HomePage = () => {
                   </Typography>
                 </li>
               </ul>
+              <TextField
+                variant="outlined"
+                label="Inference Speed (tok/s)"
+                fullWidth
+                type="number"
+              />
             </CardContent>
           </Card>
           <Card>
@@ -80,6 +93,20 @@ export const HomePage = () => {
                 Use this section if you want to factor in the hardware cost of
                 your local AI rig and amortize it over a certain period of time.
               </Typography>
+              <TextField
+                variant="outlined"
+                label="Cost of components"
+                fullWidth
+                type="number"
+                sx={{ marginTop: '8px' }}
+              />
+              <TextField
+                variant="outlined"
+                label="Average token usage per day"
+                fullWidth
+                type="number"
+                sx={{ marginTop: '8px' }}
+              />
             </CardContent>
           </Card>
         </Box>
