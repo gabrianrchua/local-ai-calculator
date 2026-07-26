@@ -1,6 +1,8 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import HomePage from './pages/Home';
+import { Box } from '@mui/material';
+import styles from './App.module.css';
 
 const darkTheme = createTheme({
   palette: {
@@ -12,7 +14,9 @@ export const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <HomePage />
+      <Box className={styles.pageWrapper}>
+        <HomePage />
+      </Box>
     </ThemeProvider>
   );
 };

@@ -1,0 +1,10 @@
+.rootBox {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 8px;
+}
+
+.childBox {
+  flex-grow: 1;
+}
