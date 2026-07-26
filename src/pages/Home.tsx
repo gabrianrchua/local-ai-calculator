@@ -12,12 +12,20 @@ import styles from './Home.module.css';
 import { useState } from 'react';
 
 const isNumber = (value: string) => {
-  return Number.isNaN(parseInt(value));
+  return !Number.isNaN(parseInt(value, 10)) && value !== '';
 };
 
 export const HomePage = () => {
   const [powerDraw, setPowerDraw] = useState<string>('0');
   const [powerDrawError, setPowerDrawError] = useState<boolean>(false);
+  const [inferenceSpeed, setInferenceSpeed] = useState<string>('0');
+  const [inferenceSpeedError, setInferenceSpeedError] =
+    useState<boolean>(false);
+  const [hardwareCost, setHardwareCost] = useState<string>('0');
+  const [hardwareCostError, setHardwareCostError] = useState<boolean>(false);
+  const [tokenUsagePerDay, setTokenUsagePerDay] = useState<string>('0');
+  const [tokenUsagePerDayError, setTokenUsagePerDayError] =
+    useState<boolean>(false);
 
   return (
     <>
@@ -96,7 +104,13 @@ export const HomePage = () => {
                 variant="outlined"
                 label="Inference Speed (tok/s)"
                 fullWidth
-                type="number"
+                value={inferenceSpeed}
+                onChange={(event) => {
+                  setInferenceSpeed(event.target.value);
+                  setInferenceSpeedError(!isNumber(event.target.value));
+                }}
+                error={inferenceSpeedError}
+                helperText={inferenceSpeedError ? 'Enter a valid number' : ''}
               />
             </CardContent>
           </Card>
@@ -111,14 +125,26 @@ export const HomePage = () => {
                 variant="outlined"
                 label="Cost of components"
                 fullWidth
-                type="number"
+                value={hardwareCost}
+                onChange={(event) => {
+                  setHardwareCost(event.target.value);
+                  setHardwareCostError(!isNumber(event.target.value));
+                }}
+                error={hardwareCostError}
+                helperText={hardwareCostError ? 'Enter a valid number' : ''}
                 sx={{ marginTop: '8px' }}
               />
               <TextField
                 variant="outlined"
                 label="Average token usage per day"
                 fullWidth
-                type="number"
+                value={tokenUsagePerDay}
+                onChange={(event) => {
+                  setTokenUsagePerDay(event.target.value);
+                  setTokenUsagePerDayError(!isNumber(event.target.value));
+                }}
+                error={tokenUsagePerDayError}
+                helperText={tokenUsagePerDayError ? 'Enter a valid number' : ''}
                 sx={{ marginTop: '8px' }}
               />
             </CardContent>
