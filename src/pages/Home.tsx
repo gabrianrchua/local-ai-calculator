@@ -173,6 +173,36 @@ const safeCalculateTotalCost = (
   return `$${totalCost.toFixed(2)} / MTok`;
 };
 
+/**
+ * Reference cost ranges (per million tokens) for comparison with frontier models.
+ */
+const tableData = [
+  {
+    tier: 'Small',
+    examples: 'Claude Haiku, GPT mini, Gemini Flash-Lite',
+    costLow: 1,
+    costHigh: 5,
+  },
+  {
+    tier: 'Medium',
+    examples: 'Claude Sonnet, GPT Luna, Gemini Flash',
+    costLow: 9,
+    costHigh: 15,
+  },
+  {
+    tier: 'Large',
+    examples: 'Claude Opus, GPT Terra, Gemini Pro',
+    costLow: 18,
+    costHigh: 25,
+  },
+  {
+    tier: 'Flagship',
+    examples: 'Claude Fable, GPT Sol',
+    costLow: 45,
+    costHigh: 50,
+  },
+];
+
 export const HomePage = () => {
   const [powerDraw, setPowerDraw] = useState<string>('300');
   const [powerDrawError, setPowerDrawError] = useState<boolean>(false);
@@ -474,30 +504,13 @@ export const HomePage = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>Small</TableCell>
-                      <TableCell>
-                        Claude Haiku, GPT mini, Gemini Flash-Lite
-                      </TableCell>
-                      <TableCell>$1 - $5</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Medium</TableCell>
-                      <TableCell>
-                        Claude Sonnet, GPT Luna, Gemini Flash
-                      </TableCell>
-                      <TableCell>$9 - $15</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Large</TableCell>
-                      <TableCell>Claude Opus, GPT Terra, Gemini Pro</TableCell>
-                      <TableCell>$18 - $25</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Flagship</TableCell>
-                      <TableCell>Claude Fable, GPT Sol</TableCell>
-                      <TableCell>$45 - $50</TableCell>
-                    </TableRow>
+                    {tableData.map((row) => (
+                      <TableRow key={row.tier}>
+                        <TableCell>{row.tier}</TableCell>
+                        <TableCell>{row.examples}</TableCell>
+                        <TableCell>${row.costLow} - ${row.costHigh}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </TableContainer>
