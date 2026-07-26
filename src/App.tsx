@@ -1,7 +1,7 @@
-import "./App.css";
+import './App.css';
 
-function App() {
+export const App = () => {
   return <div>hello world</div>;
-}
+};
 
 export default App;
