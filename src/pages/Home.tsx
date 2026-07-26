@@ -9,8 +9,16 @@ import {
 } from '@mui/material';
 
 import styles from './Home.module.css';
+import { useState } from 'react';
+
+const isNumber = (value: string) => {
+  return Number.isNaN(parseInt(value));
+};
 
 export const HomePage = () => {
+  const [powerDraw, setPowerDraw] = useState<string>('0');
+  const [powerDrawError, setPowerDrawError] = useState<boolean>(false);
+
   return (
     <>
       <Typography variant="h3">Home AI Rig Cost Calculator</Typography>
@@ -39,7 +47,7 @@ export const HomePage = () => {
                     </Link>{' '}
                     and use the "Estimated Wattage." Note that real-world power
                     draw is typically lower because CPU power draw is not at
-                    100% for GPU inference.
+                    100% for GPU-bound inference.
                   </Typography>
                 </li>
               </ul>
@@ -47,7 +55,13 @@ export const HomePage = () => {
                 variant="outlined"
                 label="Total Power Draw (W)"
                 fullWidth
-                type="number"
+                value={powerDraw}
+                onChange={(event) => {
+                  setPowerDraw(event.target.value);
+                  setPowerDrawError(!isNumber(event.target.value));
+                }}
+                error={powerDrawError}
+                helperText={powerDrawError ? 'Enter a valid number' : ''}
               />
             </CardContent>
           </Card>
