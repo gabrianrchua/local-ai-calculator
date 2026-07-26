@@ -331,6 +331,7 @@ export const HomePage = () => {
                   },
                 }}
               />
+              <br />
               <TextField
                 variant="outlined"
                 label="Cost of Electricity ($/kWh)"
@@ -448,6 +449,7 @@ export const HomePage = () => {
                   },
                 }}
               />
+              <br />
               <TextField
                 variant="outlined"
                 label="Token usage per day"
@@ -467,6 +469,7 @@ export const HomePage = () => {
                   },
                 }}
               />
+              <br />
               <TextField
                 variant="outlined"
                 label="Amortization Length (years)"
@@ -520,7 +523,7 @@ export const HomePage = () => {
                 million tokens. Use this value if you want to spread the
                 one-time purchase cost of your rig over time.
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: '12px' }}>
                 <b>Hardware cost only:</b>
               </Typography>
               <Typography variant="h5" color="secondary">
