@@ -223,7 +223,7 @@ const describeCostComparison = (cost: number): string => {
   const roundedCost: string = cost.toFixed(2);
 
   if (matchingTier) {
-    return `At $${roundedCost} / MTok, your cost is similar to ${matchingTier.tier.toLowerCase()}-sized paid models.`;
+    return `At $${roundedCost} / MTok, your cost is similar to ${matchingTier.tier.toLowerCase()}-sized cloud models.`;
   }
 
   // Check if the cost sits between two consecutive tiers
@@ -232,16 +232,16 @@ const describeCostComparison = (cost: number): string => {
     const upper = tableData[i + 1];
 
     if (cost > lower.costHigh && cost < upper.costLow) {
-      return `At $${roundedCost} / MTok, your cost is cheaper than ${upper.tier.toLowerCase()}-sized models but more expensive than ${lower.tier.toLowerCase()}-sized models.`;
+      return `At $${roundedCost} / MTok, your cost is cheaper than ${upper.tier.toLowerCase()}-sized cloud models but more expensive than ${lower.tier.toLowerCase()}-sized cloud models.`;
     }
   }
 
   // Below all tiers or above all tiers — check in order
   if (cost < tableData[0].costLow) {
-    return `At $${roundedCost} / MTok, your cost is less than even the most inexpensive paid models!`;
+    return `At $${roundedCost} / MTok, your cost is less than even the most inexpensive cloud models!`;
   }
 
-  return `At $${roundedCost} / MTok, your cost exceeds even the most expensive paid models.`;
+  return `At $${roundedCost} / MTok, your cost exceeds even the most expensive cloud models.`;
 };
 
 export const HomePage = () => {
@@ -264,14 +264,16 @@ export const HomePage = () => {
   return (
     <>
       <Typography variant="h3">Home AI Rig Cost Calculator</Typography>
-      <Typography variant="body2">
+      <Typography variant="body2" sx={{ marginTop: '12px' }}>
         Whether building a local AI computer makes sense depends on both cost
-        and performance. A local model can never compete with current frontier
-        models, but they often can perform well against small to medium sized
-        models. If a strong local model performs just as well as a cloud model
-        but is cheaper to run, it can make sense to build or buy a local AI
-        compute node. Plus, it gives you complete control over the software and
-        increased privacy, knowing that your data never leaves your own network!
+        and performance. A local model can never compete with a current frontier
+        model due to sheer difference in scale (tens of billions vs.
+        multi-trillions of parameters), but they often can perform well against
+        small to medium sized models. If a strong local model performs just as
+        well as a cloud model but is cheaper to run, it can make sense to build
+        or buy a local AI compute node. Plus, it gives you complete control over
+        the software and increased privacy, knowing that your data never leaves
+        your own network!
       </Typography>
       <Divider sx={{ marginBottom: '8px', marginTop: '8px' }} />
       <Box className={styles.rootBox}>
@@ -285,7 +287,7 @@ export const HomePage = () => {
               </Typography>
               <Accordion defaultExpanded elevation={3}>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                  More info
+                  <Typography variant="body1">More info</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ul className={styles.ul}>
@@ -359,7 +361,7 @@ export const HomePage = () => {
               </Typography>
               <Accordion defaultExpanded elevation={3}>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                  More info
+                  <Typography variant="body1">More info</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <ul className={styles.ul}>
@@ -414,7 +416,7 @@ export const HomePage = () => {
               </Typography>
               <Accordion defaultExpanded elevation={3}>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                  More info
+                  <Typography variant="body1">More info</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Typography variant="body1">
@@ -518,12 +520,18 @@ export const HomePage = () => {
                 million tokens. Use this value if you want to spread the
                 one-time purchase cost of your rig over time.
               </Typography>
+              <Typography variant="body1">
+                <b>Hardware cost only:</b>
+              </Typography>
               <Typography variant="h5" color="secondary">
                 {safeCalculateAmortizationCost(
                   hardwareCost,
                   amortizationLength,
                   tokenUsagePerDay
                 )}
+              </Typography>
+              <Typography variant="body1">
+                <b>Total cost:</b>
               </Typography>
               <Typography variant="h5" color="secondary">
                 {safeCalculateTotalCost(
@@ -624,6 +632,16 @@ export const HomePage = () => {
           </Card>
         </Box>
       </Box>
+      <Divider sx={{ marginTop: '12px' }} />
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        sx={{ marginTop: '12px' }}
+      >
+        This tool is not affiliated with, endorsed by, or connected to OpenAI,
+        Anthropic, Google, or any other company mentioned. All trademarks belong
+        to their respective owners.
+      </Typography>
     </>
   );
 };
