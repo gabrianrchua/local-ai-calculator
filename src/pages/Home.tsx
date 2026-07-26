@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Card,
   CardContent,
@@ -17,6 +20,7 @@ import {
 
 import styles from './Home.module.css';
 import { useState } from 'react';
+import { ExpandMore } from '@mui/icons-material';
 
 /**
  * Checks whether a string represents a valid number.
@@ -279,26 +283,33 @@ export const HomePage = () => {
                 Enter your rig's estimated power usage and cost of electricity
                 during inference.
               </Typography>
-              <ul>
-                <li>
-                  <Typography variant="body1">
-                    If you have a real-world value (e.g., by using a{' '}
-                    <i>Kill A Watt</i>&reg; device), use that.
-                  </Typography>
-                </li>
-                <li>
-                  <Typography variant="body1">
-                    Otherwise, you can get a good estimate by plugging your
-                    parts list into{' '}
-                    <Link href="https://pcpartpicker.com/" target="_blank">
-                      PCPartPicker
-                    </Link>{' '}
-                    and use the "Estimated Wattage." Note that real-world power
-                    draw is typically lower because CPU power draw is not at
-                    100% for GPU-bound inference.
-                  </Typography>
-                </li>
-              </ul>
+              <Accordion defaultExpanded elevation={3}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  More info
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ul className={styles.ul}>
+                    <li>
+                      <Typography variant="body1">
+                        If you have a real-world value (e.g., by using a{' '}
+                        <i>Kill A Watt</i>&reg; device), use that.
+                      </Typography>
+                    </li>
+                    <li>
+                      <Typography variant="body1">
+                        Otherwise, you can get a good estimate by plugging your
+                        parts list into{' '}
+                        <Link href="https://pcpartpicker.com/" target="_blank">
+                          PCPartPicker
+                        </Link>{' '}
+                        and use the "Estimated Wattage." Note that real-world
+                        power draw is typically lower because CPU power draw is
+                        not at 100% for GPU-bound inference.
+                      </Typography>
+                    </li>
+                  </ul>
+                </AccordionDetails>
+              </Accordion>
               <TextField
                 variant="outlined"
                 label="Total Power Draw (W)"
@@ -346,26 +357,33 @@ export const HomePage = () => {
                 Enter the token generation speed of your hardware for the model
                 you want to run, in tokens per second.
               </Typography>
-              <ul>
-                <li>
-                  <Typography variant="body1">
-                    If you have a real-world value (e.g., by renting the same
-                    GPU or from benchmarks), use that.
-                  </Typography>
-                </li>
-                <li>
-                  <Typography variant="body1">
-                    Otherwise, you can get a good estimate by plugging your GPU
-                    and desired model into{' '}
-                    <Link href="https://willitrunai.com/" target="_blank">
-                      Will It Run AI
-                    </Link>
-                    , click "Full details," apply your settings (e.g.
-                    quantization), and look for the estimated decode speed ("N
-                    tok/s decode")
-                  </Typography>
-                </li>
-              </ul>
+              <Accordion defaultExpanded elevation={3}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  More info
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ul className={styles.ul}>
+                    <li>
+                      <Typography variant="body1">
+                        If you have a real-world value (e.g., by renting the
+                        same GPU or from benchmarks), use that.
+                      </Typography>
+                    </li>
+                    <li>
+                      <Typography variant="body1">
+                        Otherwise, you can get a good estimate by plugging your
+                        GPU and desired model into{' '}
+                        <Link href="https://willitrunai.com/" target="_blank">
+                          Will It Run AI
+                        </Link>
+                        , click "Full details," apply your settings (e.g.
+                        quantization), and look for the estimated decode speed
+                        ("N tok/s decode")
+                      </Typography>
+                    </li>
+                  </ul>
+                </AccordionDetails>
+              </Accordion>
               <TextField
                 variant="outlined"
                 label="Inference Speed (tok/s)"
@@ -376,6 +394,7 @@ export const HomePage = () => {
                 }}
                 error={inferenceSpeedError}
                 helperText={inferenceSpeedError ? 'Enter a valid number' : ''}
+                sx={{ marginTop: '12px' }}
                 slotProps={{
                   input: {
                     endAdornment: (
@@ -393,6 +412,21 @@ export const HomePage = () => {
                 Use this section if you want to factor in the hardware cost of
                 your local AI rig and amortize it over a certain period of time.
               </Typography>
+              <Accordion defaultExpanded elevation={3}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  More info
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body1">
+                    Even though the purchase of hardware is a one-time cost, if
+                    you plan to use the hardware over a long period of time, you
+                    can "spread out" its cost over that time, which is called
+                    amortization. Use this section to calculate the total cost
+                    of your AI rig over the amortization period, including the
+                    initial hardware purchase cost.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
               <TextField
                 variant="outlined"
                 label="Cost of components"
