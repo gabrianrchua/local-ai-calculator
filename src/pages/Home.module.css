@@ -11,3 +11,7 @@
   flex-direction: column;
   gap: 8px;
 }
+
+.tableHeader {
+  font-weight: bold !important;
+}

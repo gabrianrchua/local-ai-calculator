@@ -5,6 +5,12 @@ import {
   Divider,
   InputAdornment,
   Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from '@mui/material';
@@ -192,7 +198,7 @@ export const HomePage = () => {
         <Box className={styles.childBox}>
           <Card>
             <CardContent>
-              <Typography variant="h5">Power Usage</Typography>
+              <Typography variant="h4">Power Usage</Typography>
               <Typography variant="body1">
                 Enter your rig's estimated power usage and cost of electricity
                 during inference.
@@ -259,7 +265,7 @@ export const HomePage = () => {
           </Card>
           <Card>
             <CardContent>
-              <Typography variant="h5">Model Performance</Typography>
+              <Typography variant="h4">Model Performance</Typography>
               <Typography variant="body1">
                 Enter the token generation speed of your hardware for the model
                 you want to run, in tokens per second.
@@ -306,7 +312,7 @@ export const HomePage = () => {
           </Card>
           <Card>
             <CardContent>
-              <Typography variant="h5">Amortization Settings</Typography>
+              <Typography variant="h4">Amortization Settings</Typography>
               <Typography variant="body1">
                 Use this section if you want to factor in the hardware cost of
                 your local AI rig and amortize it over a certain period of time.
@@ -376,13 +382,13 @@ export const HomePage = () => {
         <Box className={styles.childBox}>
           <Card>
             <CardContent>
-              <Typography variant="h5">Per Token Cost Breakdown</Typography>
+              <Typography variant="h4">Per Token Cost Breakdown</Typography>
               <Typography variant="body1">
                 The electricity-only cost of running your AI compute rig per
-                million tokens. This factors in power draw, cost of power, and
-                token generation speed.
+                million tokens. Use this value if you already owned the hardware
+                or only care about the running costs.
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="h5" color="secondary">
                 {safeCalculateCostPerMToken(
                   powerDraw,
                   inferenceSpeed,
@@ -393,24 +399,23 @@ export const HomePage = () => {
           </Card>
           <Card>
             <CardContent>
-              <Typography variant="h5">
+              <Typography variant="h4">
                 Total Cost of Ownership Breakdown
               </Typography>
               <Typography variant="body1">
                 The total cost of ownership (TCO) of purchasing and running your
                 AI compute rig, amortized over your chosen number of years, per
-                million tokens. This factors in hardware cost, tokens used per
-                day, amortization length, power draw, cost of power, and token
-                generation speed.
+                million tokens. Use this value if you want to spread the
+                one-time purchase cost of your rig over time.
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="h5" color="secondary">
                 {safeCalculateAmortizationCost(
                   hardwareCost,
                   amortizationLength,
                   tokenUsagePerDay
                 )}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="h5" color="secondary">
                 {safeCalculateTotalCost(
                   powerDraw,
                   inferenceSpeed,
@@ -420,6 +425,82 @@ export const HomePage = () => {
                   tokenUsagePerDay
                 )}
               </Typography>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <Typography variant="h4">
+                Cost Comparison with Frontier Models
+              </Typography>
+              <Typography variant="body1">
+                How does your AI Rig compare to paying for frontier models from{' '}
+                <Link
+                  href="https://developers.openai.com/api/docs/pricing"
+                  target="_blank"
+                >
+                  OpenAI
+                </Link>
+                ,{' '}
+                <Link
+                  href="https://platform.claude.com/docs/en/about-claude/pricing"
+                  target="_blank"
+                >
+                  Anthropic
+                </Link>
+                ,{' '}
+                <Link
+                  href="https://ai.google.dev/gemini-api/docs/pricing"
+                  target="_blank"
+                >
+                  Google
+                </Link>
+                , etc.?
+              </Typography>
+              <Typography variant="h6">
+                Typical output cost for different tiers per million tokens (as
+                of 2026)
+              </Typography>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className={styles.tableHeader}>Tier</TableCell>
+                      <TableCell className={styles.tableHeader}>
+                        Examples
+                      </TableCell>
+                      <TableCell className={styles.tableHeader}>
+                        Cost Range (per MTok)
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Small</TableCell>
+                      <TableCell>
+                        Claude Haiku, GPT mini, Gemini Flash-Lite
+                      </TableCell>
+                      <TableCell>$1 - $5</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Medium</TableCell>
+                      <TableCell>
+                        Claude Sonnet, GPT Luna, Gemini Flash
+                      </TableCell>
+                      <TableCell>$9 - $15</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Large</TableCell>
+                      <TableCell>Claude Opus, GPT Terra, Gemini Pro</TableCell>
+                      <TableCell>$18 - $25</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Flagship</TableCell>
+                      <TableCell>Claude Fable, GPT Sol</TableCell>
+                      <TableCell>$45 - $50</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </CardContent>
           </Card>
         </Box>
